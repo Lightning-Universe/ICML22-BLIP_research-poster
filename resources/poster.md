@@ -19,7 +19,7 @@
 
 --split--
 
-# Natural Language based Image Search
+# Unified Vision-Language Understanding and Generation
 
 This app is a demo
 of [BLIP](https://github.com/salesforce/BLIP) released by salesforce
