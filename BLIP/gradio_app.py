@@ -80,4 +80,4 @@ class Model:
         if task=="Visual Question Answering":
             return self.vqa.predict(image=image, question=question)
         else:
-            return self.caption.predict(image)
+            return self.caption.predict(image=image)

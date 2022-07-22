@@ -40,9 +40,9 @@ class ModelDemo(ServeGradio):
 
     def build_model(self):
         logger.info("loading model...")
-
+        model = Model()
         logger.info("built model!")
-        return Model()
+        return model
 
-    def predict(self, image, question: str = None) -> str:
-        return self.model.predict(image, question)
+    def predict(self, image, task:str, question: str) -> str:
+        return self.model.predict(image,task, question)
