@@ -42,7 +42,7 @@ class CaptionModel:
         self.model = model.to(device)
 
     def predict(self, image):
-        image = load_demo_image(image_size=self.image_size, device=device)
+        image = load_demo_image(image, image_size=self.image_size, device=device)
         with torch.no_grad():
             # beam search
             caption = self.model.generate(image, sample=False, num_beams=3, max_length=20, min_length=5)
@@ -64,7 +64,7 @@ class VQAModel:
         self.model = model.to(device)
 
     def predict(self, image, question):
-        image = load_demo_image(image_size=self.image_size, device=device)
+        image = load_demo_image(image, image_size=self.image_size, device=device)
 
         with torch.no_grad():
             answer = self.model(image, question, train=False, inference="generate")

@@ -139,7 +139,7 @@ if __name__ == "__main__":
     paper = "https://arxiv.org/pdf/2201.12086.pdf"
     blog = "https://blog.salesforceairesearch.com/blip-bootstrapping-language-image-pretraining/"
     github = "https://github.com/salesforce/BLIP"
-    tabs = ["Poster", "Blog", "Model Demo", "Notebook Viewer", "Paper"]
+    tabs = ["Poster", "Model Demo", "Paper", "Blog", "Notebook Viewer"]
 
     app = L.LightningApp(
         ResearchApp(
