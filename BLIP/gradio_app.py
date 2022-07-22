@@ -2,7 +2,6 @@
 #  Credits: https://github.com/salesforce/BLIP
 import os
 from re import S
-os.chdir("BLIP")
 import requests
 import torch
 from PIL import Image
@@ -73,11 +72,12 @@ class VQAModel:
 
 class Model:
     def __init__(self) -> None:
+        os.chdir("BLIP")
         self.vqa = VQAModel()
         self.caption  = CaptionModel()
 
-    def predict(self, image, task:str, question=None):
+    def predict(self, image, task:str, question: str):
         if task=="Visual Question Answering":
-            return self.vqa.predict(image, question)
+            return self.vqa.predict(image=image, question=question)
         else:
             return self.caption.predict(image)

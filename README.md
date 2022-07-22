@@ -1,20 +1,20 @@
-# ⚡️ Lightning Research Poster Template 🔬
+# ⚡️ BLIP Research Poster Template 🔬
+
+Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation
 
 Use this app to share your research paper results. This app lets you connect a blogpost, arxiv paper, and a jupyter
 notebook and even have an interactive demo for people to play with the model. This app also allows industry
 practitioners to reproduce your work.
 
-## Getting started
+> The model demo is implemented using the official [BLIP](https://github.com/salesforce/BLIP) implementation by salesforce team.
 
-To create a Research Poster you can install this app via the [Lightning CLI](https://lightning.ai/lightning-docs/) or
-[use the template](https://docs.github.com/en/articles/creating-a-repository-from-a-template) from GitHub and
-manually install the app as mentioned below.
+## Getting started
 
 ### Installation
 
 #### With Lightning CLI
 
-`lightning install app lightning/research_poster`
+`lightning install app lightning/icml22-blip`
 
 #### Use GitHub template
 
@@ -63,25 +63,24 @@ each of the arguments does in the docstrings.
 # update app.py at the root of the repo
 import lightning as L
 
-paper = "https://arxiv.org/pdf/2103.00020.pdf"
-blog = "https://openai.com/blog/clip/"
-github = "https://github.com/mlfoundations/open_clip"
-wandb = "https://wandb.ai/aniketmaurya/herbarium-2022/runs/2dvwrme5"
-tabs = ["Poster", "Blog", "Paper", "Notebook", "Training Logs", "Model Demo"]
+  poster_dir = "resources"
+  paper = "https://arxiv.org/pdf/2201.12086.pdf"
+  blog = "https://blog.salesforceairesearch.com/blip-bootstrapping-language-image-pretraining/"
+  github = "https://github.com/salesforce/BLIP"
+  tabs = ["Poster", "Blog", "Model Demo", "Notebook Viewer", "Paper"]
 
-app = L.LightningApp(
-    ResearchApp(
-        poster_dir="resources",
-        paper=paper,
-        blog=blog,
-        training_log_url=wandb,
-        github=github,
-        notebook_path="resources/Interacting_with_CLIP.ipynb",
-        launch_jupyter_lab=False,
-        launch_gradio=True,
-        tab_order=tabs,
-    )
-)
+  app = L.LightningApp(
+      ResearchApp(
+          poster_dir=poster_dir,
+          paper=paper,
+          blog=blog,
+          notebook_path="BLIP/demo.ipynb",
+          launch_gradio=True,
+          tab_order=tabs,
+          launch_jupyter_lab=False,  # don't launch for public app, can expose to security vulnerability
+      )
+  )
+
 ```
 
 ## FAQs

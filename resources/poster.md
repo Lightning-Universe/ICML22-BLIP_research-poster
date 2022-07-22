@@ -1,10 +1,10 @@
 <div style="height: 90pt;"></div>
 <div style="flex: 0 0 16%; margin-top: -10pt;">
-<img src="https://cdn.iconscout.com/icon/free/png-256/openai-1524384-1290687.png" width="100px">
+<img src="https://avatars.githubusercontent.com/u/453694?s=200&v=4" width="100px">
 </div>
 <div style="flex: 0 0 65%; text-align: center;">
-<h1 style="margin-bottom: 10pt;">Demo: CLIP Research Poster</h1>
-<h2>A demo of CLIP research paper using Lightning App</h2>
+<h1 style="margin-bottom: 10pt;">BLIP: Research Poster</h1>
+<h2>Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation</h2>
 </div>
 <div style="flex: 1">
     <div style="display: flex; align-items: center;">
@@ -21,27 +21,15 @@
 
 # Natural Language based Image Search
 
-## OpenAI introduced a neural network called CLIP which efficiently learns visual concepts from natural language supervision.
-
 This app is a demo
-of [Lightning Research Template app](https://github.com/Lightning-AI/lightning-template-research-app) which allows
-authors to build an app to share their everything
-related to their work at a single place.
-Explore the tabs at the top of this app to view blog, paper, training logs and model demo.
+of [BLIP](https://github.com/salesforce/BLIP) released by salesforce
 
-You can fork this app and edit to customize according to your need.
+Explore the tabs at the top of this app to view blog, paper, and model demo.
 
-Kudos to Soumik Rakshit and Manan Goel for their awesome
-repository [clip-lightning](https://github.com/soumik12345/clip-lightning)
+<img src="https://github.com/salesforce/BLIP/blob/main/BLIP.gif?raw=true">
 
-Thanks to [Vivien](https://github.com/vivien000) for his inspiring application using
-CLIP [Minimal user-friendly demo of OpenAI's CLIP for semantic image search](https://github.com/vivien000/clip-demo).
+Vision-Language Pre-training (VLP) has advanced the performance for many vision-language tasks. However, most existing pre-trained models only excel in either understanding-based tasks or generation-based tasks. Furthermore, performance improvement has been largely achieved by scaling up the dataset with noisy image-text pairs collected from the web, which is a suboptimal source of supervision. In this paper, the authors propose BLIP, a new VLP framework which transfers flexibly to both vision-language understanding and generation tasks. BLIP effectively utilizes the noisy web data by bootstrapping the captions, where a captioner generates synthetic captions and a filter removes the noisy ones. We achieve state-of-the-art results on a wide range of vision-language tasks, such as image-text retrieval (+2.7% in average recall@1), image captioning (+2.8% in CIDEr), and VQA (+1.6% in VQA score). BLIP also demonstrates strong generalization ability when directly transferred to video-language tasks in a zero-shot manner.
 
-<img src="https://openaiassets.blob.core.windows.net/$web/clip/draft/20210104b/overview-a.svg">
-
-CLIP pre-trains an image encoder and a text encoder to predict which images were paired with which texts in our dataset.
-We then use this behavior to turn CLIP into a zero-shot classifier. We convert all of a dataset's classes into captions
-such as "a photo of a dog" and predict the class of the caption CLIP estimates best pairs with a given image.
 
 --split--
 
@@ -69,20 +57,21 @@ graph LR
 ```python
 import lightning as L
 
-paper = "https://arxiv.org/pdf/2103.00020.pdf"
-blog = "https://openai.com/blog/clip/"
-github = "https://github.com/soumik12345/clip-lightning/tree/AddModelCheckpoint"
-wandb = "https://wandb.ai/manan-goel/clip-lightning-image_retrieval/runs/1cedtohj"
+poster_dir = "resources"
+paper = "https://arxiv.org/pdf/2201.12086.pdf"
+blog = "https://blog.salesforceairesearch.com/blip-bootstrapping-language-image-pretraining/"
+github = "https://github.com/salesforce/BLIP"
+tabs = ["Poster", "Blog", "Model Demo", "Notebook Viewer", "Paper"]
 
 app = L.LightningApp(
     ResearchApp(
-        resource_path="resources",
+        poster_dir=poster_dir,
         paper=paper,
         blog=blog,
-        training_log_url=wandb,
-        github=github,
-        notebook_path="resources/Interacting_with_CLIP.ipynb",
+        notebook_path="BLIP/demo.ipynb",
         launch_gradio=True,
+        tab_order=tabs,
+        launch_jupyter_lab=False,  # don't launch for public app, can expose to security vulnerability
     )
 )
 ```
