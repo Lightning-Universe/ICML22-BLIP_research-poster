@@ -33,7 +33,11 @@ class ModelDemo(ServeGradio):
     ]
     outputs = gr.outputs.Textbox(label="Output")
     enable_queue = True
-    examples = [["test.jpg", "Image Captioning", "None"]]
+    examples = [
+        ["test.jpg", "Image Captioning", "None"],
+        ["test1.jpg", "Image Captioning", "None"],
+        ["test2.jpg", "Visual Question Answering", "Which bird is this?"]
+        ]
 
     def __init__(self):
         super().__init__(parallel=True)
