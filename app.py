@@ -3,7 +3,7 @@ import os
 from typing import Dict, List, Optional
 
 import lightning as L
-from lightning.app import frontend
+from lightning.app.frontend.web import StaticWebFrontend
 from poster import Poster
 from rich import print
 from rich.logging import RichHandler
@@ -24,7 +24,7 @@ class StaticNotebookViewer(L.LightningFlow):
         self.serve_dir = notebook_to_html(notebook_path)
 
     def configure_layout(self):
-        return frontend.web.StaticWebFrontend(serve_dir=self.serve_dir)
+        return StaticWebFrontend(serve_dir=self.serve_dir)
 
 
 class ResearchApp(L.LightningFlow):
@@ -113,7 +113,7 @@ class ResearchApp(L.LightningFlow):
             tabs.append({"name": "Training Logs", "content": self.training_logs})
 
         if self.model_demo:
-            tabs.append({"name": "Model Demo: Unsplash Image Search", "content": self.model_demo.url})
+            tabs.append({"name": "Model Demo", "content": self.model_demo.url})
 
         if self.jupyter_lab:
             tabs.append({"name": "Jupyter Lab", "content": self.jupyter_lab.url})
@@ -136,20 +136,17 @@ class ResearchApp(L.LightningFlow):
 
 if __name__ == "__main__":
     poster_dir = "resources"
-    paper = "https://arxiv.org/pdf/2103.00020"
-    blog = "https://openai.com/blog/clip/"
-    github = "https://github.com/openai/CLIP"
-    wandb = "https://wandb.ai/manan-goel/clip-lightning-image_retrieval/runs/1cedtohj"
-    tabs = ["Blog", "Paper", "Poster", "Notebook Viewer", "Training Logs", "Model Demo: Unsplash Image Search"]
+    paper = "https://arxiv.org/pdf/2201.12086.pdf"
+    blog = "https://blog.salesforceairesearch.com/blip-bootstrapping-language-image-pretraining/"
+    github = "https://github.com/salesforce/BLIP"
+    tabs = ["Blog", "Paper", "Poster", "Notebook Viewer", "Model Demo"]
 
     app = L.LightningApp(
         ResearchApp(
             poster_dir=poster_dir,
             paper=paper,
             blog=blog,
-            training_log_url=wandb,
-            github=github,
-            notebook_path="resources/Interacting_with_CLIP.ipynb",
+            notebook_path="BLIP/demo.ipynb",
             launch_gradio=True,
             tab_order=tabs,
             launch_jupyter_lab=False,  # don't launch for public app, can expose to security vulnerability
