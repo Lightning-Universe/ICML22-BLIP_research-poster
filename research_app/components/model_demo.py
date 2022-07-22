@@ -1,3 +1,4 @@
+from cProfile import label
 import logging
 import sys
 
@@ -22,7 +23,7 @@ class ModelDemo(ServeGradio):
     """
 
     inputs = [
-        gr.inputs.Image(type="pil"),
+        gr.inputs.Image(type="pil", label="Upload image"),
         gr.inputs.Radio(
             choices=["Image Captioning", "Visual Question Answering"],
             type="value",
@@ -35,8 +36,8 @@ class ModelDemo(ServeGradio):
     enable_queue = True
     examples = [
         ["test.jpg", "Image Captioning", "None"],
-        ["test1.jpg", "Image Captioning", "None"],
-        ["test2.jpg", "Visual Question Answering", "Which bird is this?"]
+        ["test2.jpg", "Image Captioning", "None"],
+        ["test1.jpg", "Visual Question Answering", "Which bird is this?"]
         ]
 
     def __init__(self):
@@ -49,4 +50,5 @@ class ModelDemo(ServeGradio):
         return model
 
     def predict(self, image, task: str, question: str) -> str:
+        print(task, question)
         return self.model.predict(image, task, question)
