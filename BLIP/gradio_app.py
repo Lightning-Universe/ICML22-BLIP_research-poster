@@ -2,13 +2,14 @@
 #  Credits: https://github.com/salesforce/BLIP
 import os
 from re import S
+
 import requests
 import torch
+from models.blip import blip_decoder
+from models.blip_vqa import blip_vqa
 from PIL import Image
 from torchvision import transforms
 from torchvision.transforms.functional import InterpolationMode
-from models.blip import blip_decoder
-from models.blip_vqa import blip_vqa
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -70,14 +71,15 @@ class VQAModel:
             answer = self.model(image, question, train=False, inference="generate")
             return answer[0]
 
+
 class Model:
     def __init__(self) -> None:
         os.chdir("BLIP")
         self.vqa = VQAModel()
-        self.caption  = CaptionModel()
+        self.caption = CaptionModel()
 
-    def predict(self, image, task:str, question: str):
-        if task=="Visual Question Answering":
+    def predict(self, image, task: str, question: str):
+        if task == "Visual Question Answering":
             return self.vqa.predict(image=image, question=question)
         else:
             return self.caption.predict(image=image)

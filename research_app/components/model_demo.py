@@ -1,9 +1,9 @@
 import logging
+import sys
 
 import gradio as gr
 from lightning.app.components.serve import ServeGradio
 from rich.logging import RichHandler
-import sys
 
 sys.path.append("BLIP")
 from gradio_app import Model
@@ -44,5 +44,5 @@ class ModelDemo(ServeGradio):
         logger.info("built model!")
         return model
 
-    def predict(self, image, task:str, question: str) -> str:
-        return self.model.predict(image,task, question)
+    def predict(self, image, task: str, question: str) -> str:
+        return self.model.predict(image, task, question)
