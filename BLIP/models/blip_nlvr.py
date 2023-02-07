@@ -42,7 +42,6 @@ class BLIP_NLVR(nn.Module):
         )
 
     def forward(self, image, text, targets, train=True):
-
         image_embeds = self.visual_encoder(image)
         image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(image.device)
         image0_embeds, image1_embeds = torch.split(image_embeds, targets.size(0))

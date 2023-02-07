@@ -35,7 +35,7 @@ def train(model, data_loader, optimizer, epoch, device, config):
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value:.6f}"))
     metric_logger.add_meter("loss_itm", utils.SmoothedValue(window_size=1, fmt="{value:.4f}"))
     metric_logger.add_meter("loss_ita", utils.SmoothedValue(window_size=1, fmt="{value:.4f}"))
-    header = "Train Epoch: [{}]".format(epoch)
+    header = f"Train Epoch: [{epoch}]"
     print_freq = 50
 
     for i, (image, caption, idx) in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
@@ -61,7 +61,7 @@ def train(model, data_loader, optimizer, epoch, device, config):
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger.global_avg())
-    return {k: "{:.3f}".format(meter.global_avg) for k, meter in metric_logger.meters.items()}
+    return {k: f"{meter.global_avg:.3f}" for k, meter in metric_logger.meters.items()}
 
 
 @torch.no_grad()
@@ -143,7 +143,6 @@ def evaluation(model, data_loader, device, config):
     end = min(sims_matrix.size(0), start + step)
 
     for i, sims in enumerate(metric_logger.log_every(sims_matrix[start:end], 50, header)):
-
         topk_sim, topk_idx = sims.topk(k=config["k_test"], dim=0)
         encoder_output = image_feats[topk_idx].to(device)
         encoder_att = torch.ones(encoder_output.size()[:-1], dtype=torch.long).to(device)
@@ -164,14 +163,13 @@ def evaluation(model, data_loader, device, config):
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print("Evaluation time {}".format(total_time_str))
+    print(f"Evaluation time {total_time_str}")
 
     return score_matrix_i2t.cpu().numpy(), score_matrix_t2i.cpu().numpy()
 
 
 @torch.no_grad()
 def itm_eval(scores_i2t, scores_t2i, txt2img, img2txt):
-
     # Images->Text
     ranks = np.zeros(scores_i2t.shape[0])
     for index, score in enumerate(scores_i2t):
@@ -294,7 +292,6 @@ def main(args, config):
         score_test_i2t, score_test_t2i = evaluation(model_without_ddp, test_loader, device, config)
 
         if utils.is_main_process():
-
             val_result = itm_eval(score_val_i2t, score_val_t2i, val_loader.dataset.txt2img, val_loader.dataset.img2txt)
             print(val_result)
 
@@ -340,7 +337,7 @@ def main(args, config):
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print("Training time {}".format(total_time_str))
+    print(f"Training time {total_time_str}")
 
 
 if __name__ == "__main__":
@@ -355,7 +352,7 @@ if __name__ == "__main__":
     parser.add_argument("--distributed", default=True, type=bool)
     args = parser.parse_args()
 
-    config = yaml.load(open(args.config, "r"), Loader=yaml.Loader)
+    config = yaml.load(open(args.config), Loader=yaml.Loader)
 
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 

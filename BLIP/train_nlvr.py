@@ -36,12 +36,11 @@ def train(model, data_loader, optimizer, epoch, device, config):
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=50, fmt="{value:.6f}"))
     metric_logger.add_meter("loss", utils.SmoothedValue(window_size=50, fmt="{value:.4f}"))
 
-    header = "Train Epoch: [{}]".format(epoch)
+    header = f"Train Epoch: [{epoch}]"
     print_freq = 50
     step_size = 10
 
     for i, (image0, image1, text, targets) in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
-
         images = torch.cat([image0, image1], dim=0)
         images, targets = images.to(device), targets.to(device)
 
@@ -57,7 +56,7 @@ def train(model, data_loader, optimizer, epoch, device, config):
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger.global_avg())
-    return {k: "{:.4f}".format(meter.global_avg) for k, meter in metric_logger.meters.items()}
+    return {k: f"{meter.global_avg:.4f}" for k, meter in metric_logger.meters.items()}
 
 
 @torch.no_grad()
@@ -85,7 +84,7 @@ def evaluate(model, data_loader, device, config):
     metric_logger.synchronize_between_processes()
 
     print("Averaged stats:", metric_logger.global_avg())
-    return {k: "{:.4f}".format(meter.global_avg) for k, meter in metric_logger.meters.items()}
+    return {k: f"{meter.global_avg:.4f}" for k, meter in metric_logger.meters.items()}
 
 
 def main(args, config):
@@ -198,7 +197,7 @@ def main(args, config):
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print("Training time {}".format(total_time_str))
+    print(f"Training time {total_time_str}")
 
 
 if __name__ == "__main__":
@@ -213,7 +212,7 @@ if __name__ == "__main__":
     parser.add_argument("--distributed", default=True, type=bool)
     args = parser.parse_args()
 
-    config = yaml.load(open(args.config, "r"), Loader=yaml.Loader)
+    config = yaml.load(open(args.config), Loader=yaml.Loader)
 
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 

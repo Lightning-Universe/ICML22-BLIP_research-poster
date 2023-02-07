@@ -35,7 +35,7 @@ def train(model, data_loader, optimizer, epoch, device):
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value:.6f}"))
     metric_logger.add_meter("loss", utils.SmoothedValue(window_size=1, fmt="{value:.4f}"))
-    header = "Train Caption Epoch: [{}]".format(epoch)
+    header = f"Train Caption Epoch: [{epoch}]"
     print_freq = 50
 
     for i, (image, caption, _) in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
@@ -53,7 +53,7 @@ def train(model, data_loader, optimizer, epoch, device):
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger.global_avg())
-    return {k: "{:.3f}".format(meter.global_avg) for k, meter in metric_logger.meters.items()}
+    return {k: f"{meter.global_avg:.3f}" for k, meter in metric_logger.meters.items()}
 
 
 @torch.no_grad()
@@ -67,7 +67,6 @@ def evaluate(model, data_loader, device, config):
 
     result = []
     for image, image_id in metric_logger.log_every(data_loader, print_freq, header):
-
         image = image.to(device)
 
         captions = model.generate(
@@ -200,7 +199,7 @@ def main(args, config):
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print("Training time {}".format(total_time_str))
+    print(f"Training time {total_time_str}")
 
 
 if __name__ == "__main__":
@@ -215,7 +214,7 @@ if __name__ == "__main__":
     parser.add_argument("--distributed", default=True, type=bool)
     args = parser.parse_args()
 
-    config = yaml.load(open(args.config, "r"), Loader=yaml.Loader)
+    config = yaml.load(open(args.config), Loader=yaml.Loader)
 
     args.result_dir = os.path.join(args.output_dir, "result")
 

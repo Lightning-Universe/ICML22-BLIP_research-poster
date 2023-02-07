@@ -54,7 +54,6 @@ class CaptionModel:
 
 class VQAModel:
     def __init__(self) -> None:
-
         self.image_size = 480
         model_url = (
             "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_base_vqa_capfilt_large.pth"

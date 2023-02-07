@@ -21,7 +21,7 @@ from timm.models.vision_transformer import PatchEmbed, _cfg
 
 
 class Mlp(nn.Module):
-    """MLP as used in Vision Transformer, MLP-Mixer and related networks"""
+    """MLP as used in Vision Transformer, MLP-Mixer and related networks."""
 
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.0):
         super().__init__()
@@ -238,7 +238,7 @@ class VisionTransformer(nn.Module):
 
 @torch.no_grad()
 def _load_weights(model: VisionTransformer, checkpoint_path: str, prefix: str = ""):
-    """Load weights from .npz checkpoints for official Google Brain Flax implementation"""
+    """Load weights from .npz checkpoints for official Google Brain Flax implementation."""
     import numpy as np
 
     def _n2p(w, t=True):

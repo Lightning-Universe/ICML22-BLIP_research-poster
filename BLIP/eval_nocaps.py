@@ -38,7 +38,6 @@ def evaluate(model, data_loader, device, config):
 
     result = []
     for image, image_id in metric_logger.log_every(data_loader, print_freq, header):
-
         image = image.to(device)
 
         captions = model.generate(
@@ -118,7 +117,7 @@ if __name__ == "__main__":
     parser.add_argument("--distributed", default=True, type=bool)
     args = parser.parse_args()
 
-    config = yaml.load(open(args.config, "r"), Loader=yaml.Loader)
+    config = yaml.load(open(args.config), Loader=yaml.Loader)
 
     args.result_dir = os.path.join(args.output_dir, "result")
 

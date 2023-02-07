@@ -272,8 +272,8 @@ def blip_retrieval(pretrained="", **kwargs):
 
 @torch.no_grad()
 def concat_all_gather(tensor):
-    """
-    Performs all_gather operation on the provided tensors.
+    """Performs all_gather operation on the provided tensors.
+
     *** Warning ***: torch.distributed.all_gather has no gradient.
     """
     tensors_gather = [torch.ones_like(tensor) for _ in range(torch.distributed.get_world_size())]
@@ -284,8 +284,8 @@ def concat_all_gather(tensor):
 
 
 class GatherLayer(torch.autograd.Function):
-    """
-    Gather tensors from all workers with support for backward propagation:
+    """Gather tensors from all workers with support for backward propagation:
+
     This implementation does not cut the gradients as torch.distributed.all_gather does.
     """
 
@@ -303,8 +303,8 @@ class GatherLayer(torch.autograd.Function):
 
 
 def all_gather_with_grad(tensors):
-    """
-    Performs all_gather operation on the provided tensors.
+    """Performs all_gather operation on the provided tensors.
+
     Graph remains connected for backward grad computation.
     """
     # Queue the gathered tensors

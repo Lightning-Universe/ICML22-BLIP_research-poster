@@ -37,7 +37,7 @@ def train(model, data_loader, optimizer, epoch, device, config):
     metric_logger.add_meter("loss_itm", utils.SmoothedValue(window_size=50, fmt="{value:.4f}"))
     metric_logger.add_meter("loss_lm", utils.SmoothedValue(window_size=50, fmt="{value:.4f}"))
 
-    header = "Train Epoch: [{}]".format(epoch)
+    header = f"Train Epoch: [{epoch}]"
     print_freq = 50
 
     if config["laion_path"]:
@@ -46,7 +46,6 @@ def train(model, data_loader, optimizer, epoch, device, config):
     data_loader.sampler.set_epoch(epoch)
 
     for i, (image, caption) in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
-
         if epoch == 0:
             warmup_lr_schedule(optimizer, i, config["warmup_steps"], config["warmup_lr"], config["init_lr"])
 
@@ -71,7 +70,7 @@ def train(model, data_loader, optimizer, epoch, device, config):
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger.global_avg())
-    return {k: "{:.3f}".format(meter.global_avg) for k, meter in metric_logger.meters.items()}
+    return {k: f"{meter.global_avg:.3f}" for k, meter in metric_logger.meters.items()}
 
 
 def main(args, config):
@@ -131,7 +130,6 @@ def main(args, config):
     print("Start training")
     start_time = time.time()
     for epoch in range(start_epoch, config["max_epoch"]):
-
         step_lr_schedule(optimizer, epoch, config["init_lr"], config["min_lr"], config["lr_decay_rate"])
 
         train_stats = train(model, data_loader, optimizer, epoch, device, config)
@@ -155,7 +153,7 @@ def main(args, config):
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print("Training time {}".format(total_time_str))
+    print(f"Training time {total_time_str}")
 
 
 if __name__ == "__main__":
@@ -171,7 +169,7 @@ if __name__ == "__main__":
     parser.add_argument("--distributed", default=True, type=bool)
     args = parser.parse_args()
 
-    config = yaml.load(open(args.config, "r"), Loader=yaml.Loader)
+    config = yaml.load(open(args.config), Loader=yaml.Loader)
 
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 

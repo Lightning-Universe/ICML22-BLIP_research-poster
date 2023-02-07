@@ -62,7 +62,6 @@ def evaluation(model, data_loader, tokenizer, device, config):
     video_feats = []
     video_embeds = []
     for video, video_id in data_loader:
-
         B, N, C, W, H = video.size()
         video = video.view(-1, C, W, H)
         video = video.to(device, non_blocking=True)
@@ -110,7 +109,6 @@ def evaluation(model, data_loader, tokenizer, device, config):
     end = min(sims_matrix.size(0), start + step)
 
     for i, sims in enumerate(metric_logger.log_every(sims_matrix[start:end], 50, header)):
-
         topk_sim, topk_idx = sims.topk(k=config["k_test"], dim=0)
         encoder_output = video_feats[topk_idx].to(device, non_blocking=True)
         encoder_att = torch.ones(encoder_output.size()[:-1], dtype=torch.long).to(device, non_blocking=True)
@@ -131,14 +129,13 @@ def evaluation(model, data_loader, tokenizer, device, config):
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print("Evaluation time {}".format(total_time_str))
+    print(f"Evaluation time {total_time_str}")
 
     return score_matrix_v2t.cpu().numpy(), score_matrix_t2v.cpu().numpy()
 
 
 @torch.no_grad()
 def itm_eval(scores_v2t, scores_t2v, txt2vmg, vid2txt):
-
     # Video->Text
     ranks = np.zeros(scores_v2t.shape[0])
     for index, score in enumerate(scores_v2t):
@@ -231,7 +228,6 @@ def main(args, config):
     ) = evaluation(model_without_ddp, test_loader, model_without_ddp.tokenizer, device, config)
 
     if utils.is_main_process():
-
         test_result = itm_eval(score_v2t, score_t2v, test_loader.dataset.txt2video, test_loader.dataset.video2txt)
         print(test_result)
 
@@ -253,7 +249,7 @@ if __name__ == "__main__":
     parser.add_argument("--distributed", default=True, type=bool)
     args = parser.parse_args()
 
-    config = yaml.load(open(args.config, "r"), Loader=yaml.Loader)
+    config = yaml.load(open(args.config), Loader=yaml.Loader)
 
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 

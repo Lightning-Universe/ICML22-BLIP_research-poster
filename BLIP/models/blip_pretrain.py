@@ -264,8 +264,8 @@ def blip_pretrain(**kwargs):
 
 @torch.no_grad()
 def concat_all_gather(tensor):
-    """
-    Performs all_gather operation on the provided tensors.
+    """Performs all_gather operation on the provided tensors.
+
     *** Warning ***: torch.distributed.all_gather has no gradient.
     """
     tensors_gather = [torch.ones_like(tensor) for _ in range(torch.distributed.get_world_size())]
@@ -312,7 +312,7 @@ def tie_encoder_decoder_weights(encoder: nn.Module, decoder: nn.Module, base_mod
                 len(encoder_modules) > 0
             ), f"Encoder module {encoder_pointer} does not match decoder module {decoder_pointer}"
 
-            all_encoder_weights = set([module_name + "/" + sub_name for sub_name in encoder_modules.keys()])
+            all_encoder_weights = {module_name + "/" + sub_name for sub_name in encoder_modules.keys()}
             encoder_layer_pos = 0
             for name, module in decoder_modules.items():
                 if name.isdigit():
