@@ -8,6 +8,6 @@ nbconvert==6.5.0
 jupyterlite==0.1.0b7
 lightning==1.8.*
 jupyterlab==3.3.3
-transformers==4.15.0
+transformers==4.26.1
 timm==0.4.12
 fairscale==0.4.4
