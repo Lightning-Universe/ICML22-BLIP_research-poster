@@ -1,4 +1,3 @@
-from cProfile import label
 import logging
 import sys
 
@@ -37,8 +36,8 @@ class ModelDemo(ServeGradio):
     examples = [
         ["test.jpg", "Image Captioning", "None"],
         ["test2.jpg", "Image Captioning", "None"],
-        ["test1.jpg", "Visual Question Answering", "Which bird is this?"]
-        ]
+        ["test1.jpg", "Visual Question Answering", "Which bird is this?"],
+    ]
 
     def __init__(self):
         super().__init__(parallel=True)

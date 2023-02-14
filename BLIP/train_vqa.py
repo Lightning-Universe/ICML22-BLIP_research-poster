@@ -18,14 +18,11 @@ import ruamel_yaml as yaml
 import torch
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
-import torch.nn as nn
-import torch.nn.functional as F
 import utils
 from data import create_dataset, create_loader, create_sampler
 from data.utils import save_result
 from data.vqa_dataset import vqa_collate_fn
 from models.blip_vqa import blip_vqa
-from torch.utils.data import DataLoader
 from utils import cosine_lr_schedule
 
 
@@ -37,7 +34,7 @@ def train(model, data_loader, optimizer, epoch, device):
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value:.6f}"))
     metric_logger.add_meter("loss", utils.SmoothedValue(window_size=1, fmt="{value:.4f}"))
 
-    header = "Train Epoch: [{}]".format(epoch)
+    header = f"Train Epoch: [{epoch}]"
     print_freq = 50
 
     for i, (image, question, answer, weights, n) in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
@@ -55,7 +52,7 @@ def train(model, data_loader, optimizer, epoch, device):
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger.global_avg())
-    return {k: "{:.3f}".format(meter.global_avg) for k, meter in metric_logger.meters.items()}
+    return {k: f"{meter.global_avg:.3f}" for k, meter in metric_logger.meters.items()}
 
 
 @torch.no_grad()
@@ -145,9 +142,6 @@ def main(args, config):
 
     optimizer = torch.optim.AdamW(params=model.parameters(), lr=config["init_lr"], weight_decay=config["weight_decay"])
 
-    best = 0
-    best_epoch = 0
-
     print("Start training")
     start_time = time.time()
     for epoch in range(0, config["max_epoch"]):
@@ -181,11 +175,11 @@ def main(args, config):
         dist.barrier()
 
     vqa_result = evaluation(model_without_ddp, test_loader, device, config)
-    result_file = save_result(vqa_result, args.result_dir, "vqa_result")
+    save_result(vqa_result, args.result_dir, "vqa_result")
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print("Training time {}".format(total_time_str))
+    print(f"Training time {total_time_str}")
 
 
 if __name__ == "__main__":
@@ -200,7 +194,7 @@ if __name__ == "__main__":
     parser.add_argument("--distributed", default=True, type=bool)
     args = parser.parse_args()
 
-    config = yaml.load(open(args.config, "r"), Loader=yaml.Loader)
+    config = yaml.load(open(args.config), Loader=yaml.Loader)
 
     args.result_dir = os.path.join(args.output_dir, "result")
 

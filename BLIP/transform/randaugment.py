@@ -8,9 +8,7 @@ def identity_func(img):
 
 
 def autocontrast_func(img, cutoff=0):
-    """
-    same output as PIL.ImageOps.autocontrast
-    """
+    """Same output as PIL.ImageOps.autocontrast."""
     n_bins = 256
 
     def tune_channel(ch):
@@ -41,10 +39,7 @@ def autocontrast_func(img, cutoff=0):
 
 
 def equalize_func(img):
-    """
-    same output as PIL.ImageOps.equalize
-    PIL's implementation is different from cv2.equalize
-    """
+    """Same output as PIL.ImageOps.equalize PIL's implementation is different from cv2.equalize."""
     n_bins = 256
 
     def tune_channel(ch):
@@ -65,9 +60,7 @@ def equalize_func(img):
 
 
 def rotate_func(img, degree, fill=(0, 0, 0)):
-    """
-    like PIL, rotate by degree, not radians
-    """
+    """Like PIL, rotate by degree, not radians."""
     H, W = img.shape[0], img.shape[1]
     center = W / 2, H / 2
     M = cv2.getRotationMatrix2D(center, degree, 1)
@@ -76,9 +69,7 @@ def rotate_func(img, degree, fill=(0, 0, 0)):
 
 
 def solarize_func(img, thresh=128):
-    """
-    same output as PIL.ImageOps.posterize
-    """
+    """Same output as PIL.ImageOps.posterize."""
     table = np.array([el if el < thresh else 255 - el for el in range(256)])
     table = table.clip(0, 255).astype(np.uint8)
     out = table[img]
@@ -86,9 +77,7 @@ def solarize_func(img, thresh=128):
 
 
 def color_func(img, factor):
-    """
-    same output as PIL.ImageEnhance.Color
-    """
+    """Same output as PIL.ImageEnhance.Color."""
     ## implementation according to PIL definition, quite slow
     #  degenerate = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)[:, :, np.newaxis]
     #  out = blend(degenerate, img, factor)
@@ -104,9 +93,7 @@ def color_func(img, factor):
 
 
 def contrast_func(img, factor):
-    """
-    same output as PIL.ImageEnhance.Contrast
-    """
+    """Same output as PIL.ImageEnhance.Contrast."""
     mean = np.sum(np.mean(img, axis=(0, 1)) * np.array([0.114, 0.587, 0.299]))
     table = np.array([(el - mean) * factor + mean for el in range(256)]).clip(0, 255).astype(np.uint8)
     out = table[img]
@@ -114,19 +101,14 @@ def contrast_func(img, factor):
 
 
 def brightness_func(img, factor):
-    """
-    same output as PIL.ImageEnhance.Contrast
-    """
+    """Same output as PIL.ImageEnhance.Contrast."""
     table = (np.arange(256, dtype=np.float32) * factor).clip(0, 255).astype(np.uint8)
     out = table[img]
     return out
 
 
 def sharpness_func(img, factor):
-    """
-    The differences the this result and PIL are all on the 4 boundaries, the center
-    areas are same
-    """
+    """The differences the this result and PIL are all on the 4 boundaries, the center areas are same."""
     kernel = np.ones((3, 3), dtype=np.float32)
     kernel[1][1] = 5
     kernel /= 13
@@ -151,9 +133,7 @@ def shear_x_func(img, factor, fill=(0, 0, 0)):
 
 
 def translate_x_func(img, offset, fill=(0, 0, 0)):
-    """
-    same output as PIL.Image.transform
-    """
+    """Same output as PIL.Image.transform."""
     H, W = img.shape[0], img.shape[1]
     M = np.float32([[1, 0, -offset], [0, 1, 0]])
     out = cv2.warpAffine(img, M, (W, H), borderValue=fill, flags=cv2.INTER_LINEAR).astype(np.uint8)
@@ -161,9 +141,7 @@ def translate_x_func(img, offset, fill=(0, 0, 0)):
 
 
 def translate_y_func(img, offset, fill=(0, 0, 0)):
-    """
-    same output as PIL.Image.transform
-    """
+    """Same output as PIL.Image.transform."""
     H, W = img.shape[0], img.shape[1]
     M = np.float32([[1, 0, 0], [0, 1, -offset]])
     out = cv2.warpAffine(img, M, (W, H), borderValue=fill, flags=cv2.INTER_LINEAR).astype(np.uint8)
@@ -171,9 +149,7 @@ def translate_y_func(img, offset, fill=(0, 0, 0)):
 
 
 def posterize_func(img, bits):
-    """
-    same output as PIL.ImageOps.posterize
-    """
+    """Same output as PIL.ImageOps.posterize."""
     out = np.bitwise_and(img, np.uint8(255 << (8 - bits)))
     return out
 
@@ -302,7 +278,7 @@ arg_dict = {
 }
 
 
-class RandomAugment(object):
+class RandomAugment:
     def __init__(self, N=2, M=10, isPIL=False, augs=[]):
         self.N = N
         self.M = M

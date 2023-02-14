@@ -9,28 +9,17 @@
 """
 
 import math
-import os
-import warnings
-from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Tuple
 
 import torch
-import torch.nn.functional as F
 import torch.utils.checkpoint
-from torch import Tensor, device, dtype, nn
+from torch import Tensor, device, nn
 from torch.nn import CrossEntropyLoss
 from transformers.activations import ACT2FN
-from transformers.file_utils import ModelOutput
 from transformers.modeling_outputs import (
     BaseModelOutputWithPastAndCrossAttentions,
     BaseModelOutputWithPoolingAndCrossAttentions,
     CausalLMOutputWithCrossAttentions,
-    MaskedLMOutput,
-    MultipleChoiceModelOutput,
-    NextSentencePredictorOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
-    TokenClassifierOutput,
 )
 from transformers.modeling_utils import (
     PreTrainedModel,
@@ -412,7 +401,6 @@ class BertEncoder(nn.Module):
             past_key_value = past_key_values[i] if past_key_values is not None else None
 
             if self.gradient_checkpointing and self.training:
-
                 if use_cache:
                     logger.warn(
                         "`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`..."
@@ -539,17 +527,15 @@ class BertOnlyMLMHead(nn.Module):
 
 
 class BertPreTrainedModel(PreTrainedModel):
-    """
-    An abstract class to handle weights initialization and a simple interface for downloading and loading pretrained
-    models.
-    """
+    """An abstract class to handle weights initialization and a simple interface for downloading and loading pretrained
+    models."""
 
     config_class = BertConfig
     base_model_prefix = "bert"
     _keys_to_ignore_on_load_missing = [r"position_ids"]
 
     def _init_weights(self, module):
-        """Initialize the weights"""
+        """Initialize the weights."""
         if isinstance(module, (nn.Linear, nn.Embedding)):
             # Slightly different from the TF version which uses truncated_normal for initialization
             # cf https://github.com/pytorch/pytorch/pull/5617
@@ -562,13 +548,13 @@ class BertPreTrainedModel(PreTrainedModel):
 
 
 class BertModel(BertPreTrainedModel):
-    """
-    The model can behave as an encoder (with only self-attention) as well as a decoder, in which case a layer of
+    """The model can behave as an encoder (with only self-attention) as well as a decoder, in which case a layer of
     cross-attention is added between the self-attention layers, following the architecture described in `Attention is
     all you need <https://arxiv.org/abs/1706.03762>`__ by Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit,
-    Llion Jones, Aidan N. Gomez, Lukasz Kaiser and Illia Polosukhin.
-    argument and :obj:`add_cross_attention` set to :obj:`True`; an :obj:`encoder_hidden_states` is then expected as an
-    input to the forward pass.
+    Llion Jones, Aidan N.
+
+    Gomez, Lukasz Kaiser and Illia Polosukhin. argument and :obj:`add_cross_attention` set to :obj:`True`; an
+    :obj:`encoder_hidden_states` is then expected as an input to the forward pass.
     """
 
     def __init__(self, config, add_pooling_layer=True):
@@ -590,8 +576,9 @@ class BertModel(BertPreTrainedModel):
         self.embeddings.word_embeddings = value
 
     def _prune_heads(self, heads_to_prune):
-        """
-        Prunes heads of the model. heads_to_prune: dict of {layer_num: list of heads to prune in this layer} See base
+        """Prunes heads of the model.
+
+        heads_to_prune: dict of {layer_num: list of heads to prune in this layer} See base
         class PreTrainedModel
         """
         for layer, heads in heads_to_prune.items():
@@ -600,8 +587,7 @@ class BertModel(BertPreTrainedModel):
     def get_extended_attention_mask(
         self, attention_mask: Tensor, input_shape: Tuple[int], device: device, is_decoder: bool
     ) -> Tensor:
-        """
-        Makes broadcastable attention and causal masks so that future and masked tokens are ignored.
+        """Makes broadcastable attention and causal masks so that future and masked tokens are ignored.
 
         Arguments:
             attention_mask (:obj:`torch.Tensor`):
@@ -621,7 +607,8 @@ class BertModel(BertPreTrainedModel):
         elif attention_mask.dim() == 2:
             # Provided a padding mask of dimensions [batch_size, seq_length]
             # - if the model is a decoder, apply a causal mask in addition to the padding mask
-            # - if the model is an encoder, make the mask broadcastable to [batch_size, num_heads, seq_length, seq_length]
+            # - if the model is an encoder, make the mask broadcastable
+            #       to [batch_size, num_heads, seq_length, seq_length]
             if is_decoder:
                 batch_size, seq_length = input_shape
 
@@ -680,16 +667,17 @@ class BertModel(BertPreTrainedModel):
         is_decoder=False,
         mode="multimodal",
     ):
-        r"""
-        encoder_hidden_states  (:obj:`torch.FloatTensor` of shape :obj:`(batch_size, sequence_length, hidden_size)`, `optional`):
-            Sequence of hidden-states at the output of the last layer of the encoder. Used in the cross-attention if
-            the model is configured as a decoder.
-        encoder_attention_mask (:obj:`torch.FloatTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`):
-            Mask to avoid performing attention on the padding token indices of the encoder input. This mask is used in
-            the cross-attention if the model is configured as a decoder. Mask values selected in ``[0, 1]``:
+        r"""encoder_hidden_states  (:obj:`torch.FloatTensor` of shape :obj:`(batch_size, sequence_length, hidden_size)`,
+        `optional`): Sequence of hidden-states at the output of the last layer of the encoder. Used in the cross-
+        attention if the model is configured as a decoder. encoder_attention_mask (:obj:`torch.FloatTensor` of shape
+        :obj:`(batch_size, sequence_length)`, `optional`): Mask to avoid performing attention on the padding token
+        indices of the encoder input. This mask is used in the cross-attention if the model is configured as a decoder.
+        Mask values selected in ``[0, 1]``:
+
             - 1 for tokens that are **not masked**,
             - 0 for tokens that are **masked**.
-        past_key_values (:obj:`tuple(tuple(torch.FloatTensor))` of length :obj:`config.n_layers` with each tuple having 4 tensors of shape :obj:`(batch_size, num_heads, sequence_length - 1, embed_size_per_head)`):
+        past_key_values (:obj:`tuple(tuple(torch.FloatTensor))` of length :obj:`config.n_layers` with each tuple having
+            4 tensors of shape :obj:`(batch_size, num_heads, sequence_length - 1, embed_size_per_head)`):
             Contains precomputed key and value hidden states of the attention blocks. Can be used to speed up decoding.
             If :obj:`past_key_values` are used, the user can optionally input only the last :obj:`decoder_input_ids`
             (those that don't have their past key value states given to this model) of shape :obj:`(batch_size, 1)`
@@ -804,7 +792,6 @@ class BertModel(BertPreTrainedModel):
 
 
 class BertLMHeadModel(BertPreTrainedModel):
-
     _keys_to_ignore_on_load_unexpected = [r"pooler"]
     _keys_to_ignore_on_load_missing = [r"position_ids", r"predictions.decoder.bias"]
 
@@ -842,20 +829,21 @@ class BertLMHeadModel(BertPreTrainedModel):
         reduction="mean",
         mode="multimodal",
     ):
-        r"""
-        encoder_hidden_states  (:obj:`torch.FloatTensor` of shape :obj:`(batch_size, sequence_length, hidden_size)`, `optional`):
-            Sequence of hidden-states at the output of the last layer of the encoder. Used in the cross-attention if
-            the model is configured as a decoder.
-        encoder_attention_mask (:obj:`torch.FloatTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`):
-            Mask to avoid performing attention on the padding token indices of the encoder input. This mask is used in
-            the cross-attention if the model is configured as a decoder. Mask values selected in ``[0, 1]``:
+        r"""encoder_hidden_states  (:obj:`torch.FloatTensor` of shape :obj:`(batch_size, sequence_length, hidden_size)`,
+        `optional`): Sequence of hidden-states at the output of the last layer of the encoder. Used in the cross-
+        attention if the model is configured as a decoder. encoder_attention_mask (:obj:`torch.FloatTensor` of shape
+        :obj:`(batch_size, sequence_length)`, `optional`): Mask to avoid performing attention on the padding token
+        indices of the encoder input. This mask is used in the cross-attention if the model is configured as a decoder.
+        Mask values selected in ``[0, 1]``:
+
             - 1 for tokens that are **not masked**,
             - 0 for tokens that are **masked**.
         labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`):
             Labels for computing the left-to-right language modeling loss (next word prediction). Indices should be in
             ``[-100, 0, ..., config.vocab_size]`` (see ``input_ids`` docstring) Tokens with indices set to ``-100`` are
             ignored (masked), the loss is only computed for the tokens with labels n ``[0, ..., config.vocab_size]``
-        past_key_values (:obj:`tuple(tuple(torch.FloatTensor))` of length :obj:`config.n_layers` with each tuple having 4 tensors of shape :obj:`(batch_size, num_heads, sequence_length - 1, embed_size_per_head)`):
+        past_key_values (:obj:`tuple(tuple(torch.FloatTensor))` of length :obj:`config.n_layers` with each tuple having
+            4 tensors of shape :obj:`(batch_size, num_heads, sequence_length - 1, embed_size_per_head)`):
             Contains precomputed key and value hidden states of the attention blocks. Can be used to speed up decoding.
             If :obj:`past_key_values` are used, the user can optionally input only the last :obj:`decoder_input_ids`
             (those that don't have their past key value states given to this model) of shape :obj:`(batch_size, 1)`

@@ -5,15 +5,16 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  * By Junnan Li
 """
+import logging
+
 import transformers
 from models.med import BertConfig, BertLMHeadModel, BertModel
-from transformers import BertTokenizer
 
 transformers.logging.set_verbosity_error()
 
 import torch
 import torch.nn.functional as F
-from models.blip import create_vit, init_tokenizer, load_checkpoint
+from models.blip import create_vit, init_tokenizer
 from torch import nn
 
 
@@ -46,7 +47,7 @@ class BLIP_Pretrain(nn.Module):
                 check_hash=True,
             )
             state_dict = checkpoint["model"]
-            msg = self.visual_encoder.load_state_dict(state_dict, strict=False)
+            self.visual_encoder.load_state_dict(state_dict, strict=False)
         elif vit == "large":
             from timm.models.helpers import load_custom_pretrained
             from timm.models.vision_transformer import default_cfgs
@@ -264,8 +265,8 @@ def blip_pretrain(**kwargs):
 
 @torch.no_grad()
 def concat_all_gather(tensor):
-    """
-    Performs all_gather operation on the provided tensors.
+    """Performs all_gather operation on the provided tensors.
+
     *** Warning ***: torch.distributed.all_gather has no gradient.
     """
     tensors_gather = [torch.ones_like(tensor) for _ in range(torch.distributed.get_world_size())]
@@ -281,8 +282,9 @@ from typing import List
 def tie_encoder_decoder_weights(encoder: nn.Module, decoder: nn.Module, base_model_prefix: str, skip_key: str):
     uninitialized_encoder_weights: List[str] = []
     if decoder.__class__ != encoder.__class__:
-        logger.info(
-            f"{decoder.__class__} and {encoder.__class__} are not equal. In this case make sure that all encoder weights are correctly initialized."
+        logging.info(
+            f"{decoder.__class__} and {encoder.__class__} are not equal."
+            f" In this case make sure that all encoder weights are correctly initialized."
         )
 
     def tie_encoder_to_decoder_recursively(
@@ -312,7 +314,7 @@ def tie_encoder_decoder_weights(encoder: nn.Module, decoder: nn.Module, base_mod
                 len(encoder_modules) > 0
             ), f"Encoder module {encoder_pointer} does not match decoder module {decoder_pointer}"
 
-            all_encoder_weights = set([module_name + "/" + sub_name for sub_name in encoder_modules.keys()])
+            all_encoder_weights = {module_name + "/" + sub_name for sub_name in encoder_modules.keys()}
             encoder_layer_pos = 0
             for name, module in decoder_modules.items():
                 if name.isdigit():
@@ -330,7 +332,8 @@ def tie_encoder_decoder_weights(encoder: nn.Module, decoder: nn.Module, base_mod
                     continue
                 elif depth > 500:
                     raise ValueError(
-                        "Max depth of recursive function `tie_encoder_to_decoder` reached. It seems that there is a circular dependency between two or more `nn.Modules` of your model."
+                        "Max depth of recursive function `tie_encoder_to_decoder` reached."
+                        " It seems that there is a circular dependency between two or more `nn.Modules` of your model."
                     )
                 else:
                     decoder_name = encoder_name = name

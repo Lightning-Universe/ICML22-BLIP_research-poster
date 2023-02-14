@@ -6,25 +6,18 @@
  * By Junnan Li
 """
 import argparse
-import datetime
-import json
 import os
 import random
-import time
 from pathlib import Path
 
 import numpy as np
 import ruamel_yaml as yaml
 import torch
 import torch.backends.cudnn as cudnn
-import torch.distributed as dist
-import torch.nn as nn
-import torch.nn.functional as F
 import utils
 from data import create_dataset, create_loader, create_sampler
 from data.utils import save_result
 from models.blip import blip_decoder
-from torch.utils.data import DataLoader
 
 
 @torch.no_grad()
@@ -38,7 +31,6 @@ def evaluate(model, data_loader, device, config):
 
     result = []
     for image, image_id in metric_logger.log_every(data_loader, print_freq, header):
-
         image = image.to(device)
 
         captions = model.generate(
@@ -102,9 +94,9 @@ def main(args, config):
         model_without_ddp = model.module
 
     val_result = evaluate(model_without_ddp, val_loader, device, config)
-    val_result_file = save_result(val_result, args.result_dir, "val", remove_duplicate="image_id")
+    save_result(val_result, args.result_dir, "val", remove_duplicate="image_id")
     test_result = evaluate(model_without_ddp, test_loader, device, config)
-    test_result_file = save_result(test_result, args.result_dir, "test", remove_duplicate="image_id")
+    save_result(test_result, args.result_dir, "test", remove_duplicate="image_id")
 
 
 if __name__ == "__main__":
@@ -118,7 +110,7 @@ if __name__ == "__main__":
     parser.add_argument("--distributed", default=True, type=bool)
     args = parser.parse_args()
 
-    config = yaml.load(open(args.config, "r"), Loader=yaml.Loader)
+    config = yaml.load(open(args.config), Loader=yaml.Loader)
 
     args.result_dir = os.path.join(args.output_dir, "result")
 

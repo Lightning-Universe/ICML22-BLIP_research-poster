@@ -12,16 +12,14 @@ from functools import partial
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from fairscale.nn.checkpoint.checkpoint_activations import checkpoint_wrapper
-from timm.models.helpers import adapt_input_conv, named_apply
+from timm.models.helpers import adapt_input_conv
 from timm.models.layers import DropPath, trunc_normal_
-from timm.models.registry import register_model
-from timm.models.vision_transformer import PatchEmbed, _cfg
+from timm.models.vision_transformer import PatchEmbed, resize_pos_embed
 
 
 class Mlp(nn.Module):
-    """MLP as used in Vision Transformer, MLP-Mixer and related networks"""
+    """MLP as used in Vision Transformer, MLP-Mixer and related networks."""
 
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.0):
         super().__init__()
@@ -238,7 +236,7 @@ class VisionTransformer(nn.Module):
 
 @torch.no_grad()
 def _load_weights(model: VisionTransformer, checkpoint_path: str, prefix: str = ""):
-    """Load weights from .npz checkpoints for official Google Brain Flax implementation"""
+    """Load weights from .npz checkpoints for official Google Brain Flax implementation."""
     import numpy as np
 
     def _n2p(w, t=True):

@@ -3,7 +3,6 @@ import torch.nn.functional as F
 from models.blip import create_vit, init_tokenizer, load_checkpoint
 from models.med import BertConfig, BertModel
 from torch import nn
-from transformers import BertTokenizer
 
 
 class BLIP_ITM(nn.Module):
@@ -38,7 +37,6 @@ class BLIP_ITM(nn.Module):
         self.itm_head = nn.Linear(text_width, 2)
 
     def forward(self, image, caption, match_head="itm"):
-
         image_embeds = self.visual_encoder(image)
         image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(image.device)
 
