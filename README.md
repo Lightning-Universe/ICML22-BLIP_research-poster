@@ -32,15 +32,14 @@ github = "https://github.com/salesforce/BLIP"
 tabs = ["Poster", "Blog", "Model Demo", "Notebook Viewer", "Paper"]
 
 app = L.LightningApp(
-   ResearchApp(
-       poster_dir=poster_dir,
-       paper=paper,
-       blog=blog,
-       notebook_path="BLIP/demo.ipynb",
-       launch_gradio=True,
-       tab_order=tabs,
-       launch_jupyter_lab=False,  # don't launch for public app, can expose to security vulnerability
-   )
+    ResearchApp(
+        poster_dir=poster_dir,
+        paper=paper,
+        blog=blog,
+        notebook_path="BLIP/demo.ipynb",
+        launch_gradio=True,
+        tab_order=tabs,
+        launch_jupyter_lab=False,  # don't launch for public app, can expose to security vulnerability
+    )
 )
-
 ```
