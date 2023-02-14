@@ -1,6 +1,5 @@
 import logging
 import sys
-from cProfile import label
 
 import gradio as gr
 from lightning.app.components.serve import ServeGradio

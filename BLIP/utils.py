@@ -23,12 +23,10 @@ def step_lr_schedule(optimizer, epoch, init_lr, min_lr, decay_rate):
 
 
 import datetime
-import io
 import os
 import time
 from collections import defaultdict, deque
 
-import numpy as np
 import torch
 import torch.distributed as dist
 

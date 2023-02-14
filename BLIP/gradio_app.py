@@ -1,13 +1,10 @@
 # This is code is inspired from the official BLIP implementation by Salesforce
 #  Credits: https://github.com/salesforce/BLIP
 import os
-from re import S
 
-import requests
 import torch
 from models.blip import blip_decoder
 from models.blip_vqa import blip_vqa
-from PIL import Image
 from torchvision import transforms
 from torchvision.transforms.functional import InterpolationMode
 

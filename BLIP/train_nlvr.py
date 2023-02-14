@@ -9,7 +9,6 @@ import argparse
 import datetime
 import json
 import os
-import pickle
 import random
 import time
 from pathlib import Path
@@ -19,13 +18,10 @@ import ruamel_yaml as yaml
 import torch
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
-import torch.nn as nn
-import torch.nn.functional as F
 import utils
 from data import create_dataset, create_loader, create_sampler
 from models.blip_nlvr import blip_nlvr
-from torch.utils.data import DataLoader
-from utils import cosine_lr_schedule, warmup_lr_schedule
+from utils import cosine_lr_schedule
 
 
 def train(model, data_loader, optimizer, epoch, device, config):
@@ -38,7 +34,6 @@ def train(model, data_loader, optimizer, epoch, device, config):
 
     header = f"Train Epoch: [{epoch}]"
     print_freq = 50
-    step_size = 10
 
     for i, (image0, image1, text, targets) in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
         images = torch.cat([image0, image1], dim=0)

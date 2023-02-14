@@ -18,13 +18,10 @@ import ruamel_yaml as yaml
 import torch
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
-import torch.nn as nn
-import torch.nn.functional as F
 import utils
 from data import create_dataset, create_loader, create_sampler
 from data.utils import coco_caption_eval, save_result
 from models.blip import blip_decoder
-from torch.utils.data import DataLoader
 from utils import cosine_lr_schedule
 
 

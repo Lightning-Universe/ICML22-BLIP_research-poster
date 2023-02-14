@@ -13,7 +13,6 @@ import os
 from urllib.parse import urlparse
 
 import torch
-import torch.nn.functional as F
 from models.med import BertConfig, BertLMHeadModel, BertModel
 from models.vit import VisionTransformer, interpolate_pos_embed
 from timm.models.hub import download_cached_file

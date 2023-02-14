@@ -18,12 +18,9 @@ import ruamel_yaml as yaml
 import torch
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
-import torch.nn as nn
-import torch.nn.functional as F
 import utils
 from data import create_dataset, create_loader, create_sampler
 from models.blip_pretrain import blip_pretrain
-from torch.utils.data import DataLoader
 from utils import step_lr_schedule, warmup_lr_schedule
 
 

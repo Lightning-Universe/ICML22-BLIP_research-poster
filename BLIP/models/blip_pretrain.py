@@ -7,13 +7,12 @@
 """
 import transformers
 from models.med import BertConfig, BertLMHeadModel, BertModel
-from transformers import BertTokenizer
 
 transformers.logging.set_verbosity_error()
 
 import torch
 import torch.nn.functional as F
-from models.blip import create_vit, init_tokenizer, load_checkpoint
+from models.blip import create_vit, init_tokenizer
 from torch import nn
 
 
@@ -46,7 +45,7 @@ class BLIP_Pretrain(nn.Module):
                 check_hash=True,
             )
             state_dict = checkpoint["model"]
-            msg = self.visual_encoder.load_state_dict(state_dict, strict=False)
+            self.visual_encoder.load_state_dict(state_dict, strict=False)
         elif vit == "large":
             from timm.models.helpers import load_custom_pretrained
             from timm.models.vision_transformer import default_cfgs

@@ -1,26 +1,13 @@
 import math
-import os
-import warnings
-from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Tuple
 
 import torch
-import torch.nn.functional as F
 import torch.utils.checkpoint
-from torch import Tensor, device, dtype, nn
-from torch.nn import CrossEntropyLoss
+from torch import Tensor, device, nn
 from transformers.activations import ACT2FN
-from transformers.file_utils import ModelOutput
 from transformers.modeling_outputs import (
     BaseModelOutputWithPastAndCrossAttentions,
     BaseModelOutputWithPoolingAndCrossAttentions,
-    CausalLMOutputWithCrossAttentions,
-    MaskedLMOutput,
-    MultipleChoiceModelOutput,
-    NextSentencePredictorOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
-    TokenClassifierOutput,
 )
 from transformers.modeling_utils import (
     PreTrainedModel,

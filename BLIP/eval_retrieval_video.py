@@ -18,7 +18,6 @@ import ruamel_yaml as yaml
 import torch
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
-import torch.nn as nn
 import torch.nn.functional as F
 import utils
 from data.video_dataset import VideoDataset

@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 import torch.nn.functional as F
 from models.blip import create_vit, init_tokenizer, is_url
@@ -7,7 +6,6 @@ from models.nlvr_encoder import BertModel
 from models.vit import interpolate_pos_embed
 from timm.models.hub import download_cached_file
 from torch import nn
-from transformers import BertTokenizer
 
 
 class BLIP_NLVR(nn.Module):

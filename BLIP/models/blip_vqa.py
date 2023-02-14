@@ -4,7 +4,6 @@ import torch.nn.functional as F
 from models.blip import create_vit, init_tokenizer, load_checkpoint
 from models.med import BertConfig, BertLMHeadModel, BertModel
 from torch import nn
-from transformers import BertTokenizer
 
 
 class BLIP_VQA(nn.Module):
