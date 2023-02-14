@@ -15,7 +15,7 @@ import torch.nn as nn
 from fairscale.nn.checkpoint.checkpoint_activations import checkpoint_wrapper
 from timm.models.helpers import adapt_input_conv
 from timm.models.layers import DropPath, trunc_normal_
-from timm.models.vision_transformer import PatchEmbed
+from timm.models.vision_transformer import PatchEmbed, resize_pos_embed
 
 
 class Mlp(nn.Module):

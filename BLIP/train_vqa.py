@@ -142,7 +142,6 @@ def main(args, config):
 
     optimizer = torch.optim.AdamW(params=model.parameters(), lr=config["init_lr"], weight_decay=config["weight_decay"])
 
-
     print("Start training")
     start_time = time.time()
     for epoch in range(0, config["max_epoch"]):

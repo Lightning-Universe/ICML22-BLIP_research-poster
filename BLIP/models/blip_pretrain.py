@@ -5,6 +5,8 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  * By Junnan Li
 """
+import logging
+
 import transformers
 from models.med import BertConfig, BertLMHeadModel, BertModel
 
@@ -280,8 +282,9 @@ from typing import List
 def tie_encoder_decoder_weights(encoder: nn.Module, decoder: nn.Module, base_model_prefix: str, skip_key: str):
     uninitialized_encoder_weights: List[str] = []
     if decoder.__class__ != encoder.__class__:
-        logger.info(
-            f"{decoder.__class__} and {encoder.__class__} are not equal. In this case make sure that all encoder weights are correctly initialized."
+        logging.info(
+            f"{decoder.__class__} and {encoder.__class__} are not equal."
+            f" In this case make sure that all encoder weights are correctly initialized."
         )
 
     def tie_encoder_to_decoder_recursively(
@@ -329,7 +332,8 @@ def tie_encoder_decoder_weights(encoder: nn.Module, decoder: nn.Module, base_mod
                     continue
                 elif depth > 500:
                     raise ValueError(
-                        "Max depth of recursive function `tie_encoder_to_decoder` reached. It seems that there is a circular dependency between two or more `nn.Modules` of your model."
+                        "Max depth of recursive function `tie_encoder_to_decoder` reached."
+                        " It seems that there is a circular dependency between two or more `nn.Modules` of your model."
                     )
                 else:
                     decoder_name = encoder_name = name
