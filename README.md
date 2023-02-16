@@ -25,20 +25,14 @@ practitioners to reproduce your work.
 # update app.py at the root of the repo
 import lightning as L
 
-poster_dir = "resources"
-paper = "https://arxiv.org/pdf/2201.12086.pdf"
-blog = "https://blog.salesforceairesearch.com/blip-bootstrapping-language-image-pretraining/"
-github = "https://github.com/salesforce/BLIP"
-tabs = ["Poster", "Blog", "Model Demo", "Notebook Viewer", "Paper"]
-
 app = L.LightningApp(
     ResearchApp(
-        poster_dir=poster_dir,
-        paper=paper,
-        blog=blog,
+        poster_dir="resources",
+        paper="https://arxiv.org/pdf/2201.12086.pdf",
+        blog="https://blog.salesforceairesearch.com/blip-bootstrapping-language-image-pretraining/",
         notebook_path="BLIP/demo.ipynb",
         launch_gradio=True,
-        tab_order=tabs,
+        tab_order=["Poster", "Blog", "Model Demo", "Notebook Viewer", "Paper"],
         launch_jupyter_lab=False,  # don't launch for public app, can expose to security vulnerability
     )
 )
