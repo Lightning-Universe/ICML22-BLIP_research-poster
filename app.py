@@ -134,20 +134,15 @@ class ResearchApp(L.LightningFlow):
 
 
 if __name__ == "__main__":
-    poster_dir = "resources"
-    paper = "https://arxiv.org/pdf/2201.12086.pdf"
-    blog = "https://blog.salesforceairesearch.com/blip-bootstrapping-language-image-pretraining/"
-    github = "https://github.com/salesforce/BLIP"
-    tabs = ["Poster", "Model Demo", "Paper", "Blog", "Notebook Viewer"]
 
     app = L.LightningApp(
         ResearchApp(
-            poster_dir=poster_dir,
-            paper=paper,
-            blog=blog,
+            poster_dir="resources",
+            paper="https://arxiv.org/pdf/2201.12086.pdf",
+            blog="https://blog.salesforceairesearch.com/blip-bootstrapping-language-image-pretraining/",
             notebook_path="BLIP/demo.ipynb",
             launch_gradio=True,
-            tab_order=tabs,
+            tab_order=["Poster", "Model Demo", "Paper", "Blog", "Notebook Viewer"],
             launch_jupyter_lab=False,  # don't launch for public app, can expose to security vulnerability
         )
     )
