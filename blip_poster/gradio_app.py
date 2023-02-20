@@ -7,8 +7,18 @@ from models.blip import blip_decoder
 from models.blip_vqa import blip_vqa
 from torchvision import transforms
 from torchvision.transforms.functional import InterpolationMode
+import logging
+
+import gradio as gr
+from lightning.app.components.serve import ServeGradio
+from rich.logging import RichHandler
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+FORMAT = "%(message)s"
+logging.basicConfig(level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()])
+
+logger = logging.getLogger(__name__)
 
 
 def load_demo_image(raw_image, image_size, device):
@@ -79,3 +89,42 @@ class Model:
             return self.vqa.predict(image=image, question=question)
         else:
             return self.caption.predict(image=image)
+
+
+class ModelDemo(ServeGradio):
+    """Serve model with Gradio UI.
+
+    You need to define i. `build_model` and ii. `predict` method and Lightning `ServeGradio` component will
+    automatically launch the Gradio interface.
+    """
+
+    inputs = [
+        gr.inputs.Image(type="pil", label="Upload image"),
+        gr.inputs.Radio(
+            choices=["Image Captioning", "Visual Question Answering"],
+            type="value",
+            default="Image Captioning",
+            label="Task",
+        ),
+        gr.inputs.Textbox(lines=2, label="Question"),
+    ]
+    outputs = gr.outputs.Textbox(label="Output")
+    enable_queue = True
+    examples = [
+        ["resources/test.jpg", "Image Captioning", "None"],
+        ["resources/test2.jpg", "Image Captioning", "None"],
+        ["resources/test1.jpg", "Visual Question Answering", "Which bird is this?"],
+    ]
+
+    def __init__(self):
+        super().__init__(parallel=True)
+
+    def build_model(self):
+        logger.info("loading model...")
+        model = Model()
+        logger.info("built model!")
+        return model
+
+    def predict(self, image, task: str, question: str) -> str:
+        print(task, question)
+        return self.model.predict(image, task, question)
