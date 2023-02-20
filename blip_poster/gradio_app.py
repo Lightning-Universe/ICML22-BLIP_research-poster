@@ -2,11 +2,6 @@
 #  Credits: https://github.com/salesforce/BLIP
 import os
 
-import sys
-from pprint import pprint
-
-pprint(sys.path)
-
 import torch
 from models.blip import blip_decoder
 from models.blip_vqa import blip_vqa
