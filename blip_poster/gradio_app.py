@@ -3,8 +3,8 @@
 import os
 
 import torch
-from BLIP.models.blip import blip_decoder
-from BLIP.models.blip_vqa import blip_vqa
+from models.blip import blip_decoder
+from models.blip_vqa import blip_vqa
 from torchvision import transforms
 from torchvision.transforms.functional import InterpolationMode
 import logging
